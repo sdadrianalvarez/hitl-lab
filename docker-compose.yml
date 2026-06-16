@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  hitl-lab:
+    build: .
+    container_name: hitl-lab
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/notebooks
+      - ./adapters:/home/jovyan/adapters
+      - ./iso_controls:/home/jovyan/iso_controls
+      - ./data:/home/jovyan/data
+    env_file:
+      - .env
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - JUPYTER_TOKEN=hitllab2026
+    restart: unless-stopped
+
+  # Opcional: Redis para caché de respuestas (ISO 22301 - fallback)
+  cache:
+    image: redis:7-alpine
+    container_name: hitl-cache
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
